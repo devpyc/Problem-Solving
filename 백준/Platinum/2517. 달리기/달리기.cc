@@ -1,56 +1,26 @@
 #include <bits/stdc++.h>
-#define int long long
-#define endl "\n"
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
+using namespace __gnu_pbds;
 
-struct Runner {
-    int speed, index, originalPos;
-};
+template<typename T>
+using ordered_set = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
 
-void update(vector<int>& tree, int idx, int value, int n) {
-    while (idx <= n) {
-        tree[idx] += value;
-        idx += idx & -idx;
-    }
-}
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
 
-int query(const vector<int>& tree, int idx) {
-    int sum = 0;
-    while (idx > 0) {
-        sum += tree[idx];
-        idx -= idx & -idx;
-    }
-    return sum;
-}
-
-int32_t main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    
     int n;
-    cin >> n;
-    vector<Runner> runners(n);
-    vector<int> results(n), tree(n + 1, 0);
+    cin>>n;
 
-    for (int i = 0; i < n; ++i) {
-        cin >> runners[i].speed;
-        runners[i].originalPos = i + 1;
+    ordered_set<pair<long long,int>>s;
+
+    for (int i=0; i<n; i++) {
+        long long x;
+        cin>>x;
+
+        int cnt=s.order_of_key({x,INT_MAX});
+        cout<<i-cnt+1<<"\n";
+        s.insert({x,i});
     }
-
-    sort(runners.begin(), runners.end(), [](const Runner& a, const Runner& b) {
-        return a.speed > b.speed || (a.speed == b.speed && a.originalPos < b.originalPos);
-    });
-
-    for (int i = 0; i < n; ++i) {
-        int pos = runners[i].originalPos;
-        int rank = query(tree, pos);
-        results[pos - 1] = rank + 1;
-        update(tree, pos, 1, n);
-    }
-
-    for (int rank : results) {
-        cout << rank << endl;
-    }
-
-    return 0;
 }
