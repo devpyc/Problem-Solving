@@ -1,80 +1,77 @@
 #include <bits/stdc++.h>
-#define ll long long
-#define fi first
-#define se second
-#define pb push_back
-#define pi pair<int, int>
-#define mi map<int, int>
-#define qi queue<int>
-#define vi vector<int>
-#define vvi vector<vector<int>>
-#define tiii tuple<int,int,int>
-#define endl "\n"
-#define MOD 1000000007
-#define io ios_base::sync_with_stdio(false); cin.tie(nullptr);
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
+using namespace __gnu_pbds;
 
-struct FenwickTree {
-    vi tree;
-
-    FenwickTree(int n) : tree(n + 1, 1e9) {}
-
-    void update(int idx, int value) {
-        while (idx < tree.size()) {
-            tree[idx] = min(tree[idx], value);
-            idx += idx & -idx;
-        }
-    }
-
-    int query(int idx) {
-        int result = 1e9;
-        while (idx > 0) {
-            result = min(result, tree[idx]);
-            idx -= idx & -idx;
-        }
-        return result;
-    }
-};
+using orderd_set=tree<pair<int,int>,null_type,less<pair<int,int>>,rb_tree_tag,tree_order_statistics_node_update>;
 
 int main() {
-    io;
-    int N;
-    cin >> N;
+    cin.tie(0)->sync_with_stdio(0);
 
-    vi exam1(N), exam2(N), exam3(N);
-    vi rank1(N), rank2(N), rank3(N);
+    int n;
+    cin>>n;
 
-    for (int i = 0; i < N; ++i) {
-        cin >> exam1[i];
-        rank1[exam1[i] - 1] = i + 1;
-    }
-    for (int i = 0; i < N; ++i) {
-        cin >> exam2[i];
-        rank2[exam2[i] - 1] = i + 1;
-    }
-    for (int i = 0; i < N; ++i) {
-        cin >> exam3[i];
-        rank3[exam3[i] - 1] = i + 1;
+    vector<int>r1(n+1),r2(n+1),r3(n+1);
+
+    for (int i=1; i<=n; i++) {
+        int x;
+        cin>>x;
+
+        r1[x]=i;
     }
 
-    vector<tuple<int, int, int>> students(N);
-    for (int i = 0; i < N; ++i) {
-        students[i] = make_tuple(rank1[i], rank2[i], rank3[i]);
+    for (int i=1; i<=n; i++) {
+        int x;
+        cin>>x;
+        r2[x]=i;
+    }
+    for (int i=1; i<=n; i++) {
+        int x;
+        cin>>x;
+        r3[x]=i;
     }
 
-    sort(students.begin(), students.end());
+    vector<int>arr(n);
+    iota(arr.begin(),arr.end(),1);
+    sort(arr.begin(),arr.end(),[&](int a, int b){ return r1[a]<r1[b]; });
 
-    FenwickTree fenwick(N);
-    int ans = 0;
+    orderd_set s;
+    int ans=0;
 
-    for (auto& [r1, r2, r3] : students) {
-        int min = fenwick.query(r2);
-        if (min > r3) {
-            ans++;
+    auto INF=(int)2e9;
+
+    for (int i:arr) {
+        int a=r2[i],b=r3[i];
+
+        bool check=false;
+
+        auto it=s.lower_bound({a,-INF});
+        if (it!=s.begin()) {
+            auto pit=prev(it);
+            if (pit->second<b) check=true;
         }
-        fenwick.update(r2, r3);
-    }
-    cout << ans << endl;
 
-    return 0;
+        if (!check) ans++;
+
+        it=s.lower_bound({a,-INF});
+
+        if (it!=s.end()&&it->first==a) {
+            if (it->second<=b) continue;
+            s.erase(it);
+        }
+        it=s.lower_bound({a,-INF});
+        if (it!=s.begin()) {
+            auto pit=prev(it);
+            if (pit->second<b) continue;
+        }
+
+        auto push=s.insert({a,b}).first;
+        auto nxt=next(push);
+        while (nxt!=s.end()&&nxt->second>=b) {
+            auto er=nxt++;
+            s.erase(er);
+        }
+    }
+    cout<<ans;
 }
