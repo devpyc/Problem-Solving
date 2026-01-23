@@ -2,29 +2,21 @@
 using namespace std;
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    
-    int N;
-    cin >> N;
+    cin.tie(0)->sync_with_stdio(0);
 
-    int s = 0;
-    int cnt = 0;
+    int n;
+    cin>>n;
 
-    for(int i = 0; i < N; i++) {
-        int res;
-        cin >> res;
-
-        if(res == 1) {
-            cnt++;
-            s += cnt;
-        }
-        else {
-            cnt = 0;
+    int sum=1,ans=0;
+    for (int i=0; i<n; i++) {
+        int x;
+        cin>>x;
+        if (x) {
+            ans+=sum;
+            sum++;
+        }else {
+            sum=1;
         }
     }
-
-    cout << s << "\n";
-
-    return 0;
+    cout<<ans;
 }
