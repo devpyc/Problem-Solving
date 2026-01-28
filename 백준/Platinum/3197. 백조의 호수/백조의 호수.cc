@@ -1,136 +1,96 @@
 #include <bits/stdc++.h>
-
 using namespace std;
 
-int dx[4] = {0, 0, -1, 1};
-int dy[4] = {1, -1, 0, 0};
-char duck = '1';
-char table[1501][1501];
-bool vis[1501][1501];
-bool wvis[1501][1501];
-int R, C;
-queue<pair<int, int>> LQ[2];
-queue<pair<int, int>> RQ[2];
-queue<pair<int, int>> WQ[2];
+vector<int>parent;
+vector<string>lake;
+int r,c;
 
-bool lBfs(int day) {
-    while (!LQ[day % 2].empty()) {
-        auto q = LQ[day % 2].front();
-        LQ[day % 2].pop();
-        vis[q.second][q.first] = true;
-        for (int i = 0; i < 4; i++) {
-            int ny = q.second + dy[i];
-            int nx = q.first + dx[i];
-            if (ny < 0 || nx < 0 || ny >= R || nx >= C)
-                continue;
-            if (table[ny][nx] == '2')
-                return true;
-            if (vis[ny][nx] == true)
-                continue;
-            if (table[ny][nx] == '.') {
-                vis[ny][nx] = true;
-                table[ny][nx] = '1';
-                LQ[day % 2].push({nx, ny});
-            } else if (table[ny][nx] == 'X') {
-                vis[ny][nx] = true;
-                table[ny][nx] = '1';
-                LQ[(day + 1) % 2].push({nx, ny});
+int dx[4]={1,-1,0,0};
+int dy[4]={0,0,1,-1};
+
+int find(int x){
+    if(parent[x]==x) return x;
+    else return parent[x]=find(parent[x]);
+}
+
+void Union(int x, int y){
+    x=find(x);
+    y=find(y);
+    if (x!=y) parent[y]=x;
+}
+
+int id(int x, int y) {
+    return x*c+y;
+}
+
+bool range(int x, int y) {
+    return x>=0&&x<r&&y>=0&&y<c;
+}
+
+
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
+
+    cin>>r>>c;
+
+    lake.resize(r);
+    parent.resize(r*c);
+
+    for (int i=0; i<r*c; i++) {
+        parent[i]=i;
+    }
+
+    queue<pair<int,int>>q;
+    vector<int>arr;
+
+    for (int i=0; i<r; i++) {
+        cin>>lake[i];
+        for (int j=0; j<c; j++) {
+            if (lake[i][j]=='L') {
+                arr.push_back(id(i,j));
+                lake[i][j]='.';
             }
         }
     }
-    return false;
-}
 
-bool rBfs(int day) {
-    while (!RQ[day % 2].empty()) {
-        auto q = RQ[day % 2].front();
-        RQ[day % 2].pop();
-        vis[q.second][q.first] = true;
-        for (int i = 0; i < 4; i++) {
-            int ny = q.second + dy[i];
-            int nx = q.first + dx[i];
-            if (ny < 0 || nx < 0 || ny >= R || nx >= C)
-                continue;
-            if (table[ny][nx] == '1')
-                return true;
-            if (vis[ny][nx] == true)
-                continue;
-            if (table[ny][nx] == '.') {
-                vis[ny][nx] = true;
-                table[ny][nx] = '2';
-                RQ[day % 2].push({nx, ny});
-            } else if (table[ny][nx] == 'X') {
-                vis[ny][nx] = true;
-                table[ny][nx] = '2';
-                RQ[(day + 1) % 2].push({nx, ny});
-            }
-        }
-    }
-    return false;
-}
-
-void wBfs(int day) {
-    if (day == 0) {
-        for (int i = 0; i < R; i++) {
-            for (int j = 0; j < C; j++) {
-                if (table[i][j] == '.') {
-                    WQ[0].push({j, i});
-                    wvis[i][j] = true;
+    for (int i=0; i<r; i++) {
+        for (int j=0; j<c; j++) {
+            if (lake[i][j]=='.') {
+                for (int k=0; k<4; k++) {
+                    int rx=i+dx[k];
+                    int cy=j+dy[k];
+                    if (!range(rx,cy)) continue;
+                    if (lake[rx][cy]=='.') Union(id(i,j),id(rx,cy));
+                    else if (lake[rx][cy]=='X') q.push({rx,cy});
                 }
             }
         }
     }
-    while (!WQ[day % 2].empty()) {
-        auto q = WQ[day % 2].front();
-        WQ[day % 2].pop();
-        wvis[q.second][q.first] = true;
-        for (int i = 0; i < 4; i++) {
-            int ny = q.second + dy[i];
-            int nx = q.first + dx[i];
-            if (ny < 0 || nx < 0 || ny >= R || nx >= C)
-                continue;
-            if (wvis[ny][nx] == true)
-                continue;
-            if (table[ny][nx] == '.') {
-                wvis[ny][nx] = true;
-                WQ[day % 2].push({nx, ny});
-            } else if (table[ny][nx] == 'X') {
-                wvis[ny][nx] = true;
-                table[ny][nx] = '.';
-                WQ[(day + 1) % 2].push({nx, ny});
-            }
-        }
-    }
-}
 
-int main() {
-    cin >> R >> C;
-    for (int i = 0; i < R; i++) {
-        for (int j = 0; j < C; j++) {
-            char tmp;
-            cin >> tmp;
-            if (tmp == 'L') {
-                tmp = duck;
-                duck++;
-                if (LQ[0].empty())
-                    LQ[0].push({j, i});
-                else
-                    RQ[0].push({j, i});
-            }
-            table[i][j] = tmp;
-        }
-    }
-    int day = 0;
+    int cnt=0;
+
     while (true) {
-        if (lBfs(day)) {
-            cout << day << endl;
-            return 0;
+        if (find(arr[0])==find(arr[1])) {
+            cout<<cnt<<"\n";
+            break;
         }
-        if (rBfs(day)) {
-            cout << day + 1 << endl;
-            return 0;
+
+        int t=q.size();
+        while (t--) {
+            auto [r,c]=q.front();
+            q.pop();
+
+            if (lake[r][c]=='.') continue;
+            lake[r][c]='.';
+
+            for (int i=0; i<4; i++) {
+                int rx=r+dx[i];
+                int cy=c+dy[i];
+                if (!range(rx,cy)) continue;
+                if (lake[rx][cy]=='.') Union(id(r,c),id(rx,cy));
+                else q.push({rx,cy});
+            }
         }
-        wBfs(day);
-        day++;
+        cnt++;
     }
 }
