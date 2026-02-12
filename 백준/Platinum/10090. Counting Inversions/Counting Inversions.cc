@@ -1,66 +1,28 @@
 #include <bits/stdc++.h>
-#define int long long
-#define endl "\n"
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace std;
+using namespace __gnu_pbds;
 
-long long merge_and_count(vector<int>& arr, vector<int>& temp, int left, int mid, int right) {
-    int i = left;
-    int j = mid + 1;
-    int k = left;
-    long long inv_count = 0;
+typedef tree<int,null_type,less<int>,rb_tree_tag,tree_order_statistics_node_update>ordered_set;
 
-    while (i <= mid && j <= right) {
-        if (arr[i] <= arr[j]) {
-            temp[k++] = arr[i++];
-        } else {
-            temp[k++] = arr[j++];
-            inv_count += (mid - i + 1);
-        }
-    }
+int main() {
+    cin.tie(0)->sync_with_stdio(0);
 
-    while (i <= mid) {
-        temp[k++] = arr[i++];
-    }
-
-    while (j <= right) {
-        temp[k++] = arr[j++];
-    }
-
-    for (i = left; i <= right; i++) {
-        arr[i] = temp[i];
-    }
-
-    return inv_count;
-}
-
-long long merge_sort_and_count(vector<int>& arr, vector<int>& temp, int left, int right) {
-    long long inv_count = 0;
-    if (left < right) {
-        int mid = left + (right - left) / 2;
-
-        inv_count += merge_sort_and_count(arr, temp, left, mid);
-        inv_count += merge_sort_and_count(arr, temp, mid + 1, right);
-
-        inv_count += merge_and_count(arr, temp, left, mid, right);
-    }
-    return inv_count;
-}
-
-int32_t main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    
     int n;
-    cin >> n;
+    cin>>n;
 
-    vector<int> arr(n);
-    for (int i = 0; i < n; i++) {
-        cin >> arr[i];
+    ordered_set s;
+    long long cnt=0;
+
+    for (int i=0; i<n; i++) {
+        int x;
+        cin>>x;
+
+        int Min=s.order_of_key(x);
+        int Max=s.size()-Min;
+        cnt+=Max;
+        s.insert(x);
     }
-
-    vector<int> temp(n);
-    long long result = merge_sort_and_count(arr, temp, 0, n - 1);
-
-    cout << result << endl;
-    return 0;
+    cout<<cnt;
 }
