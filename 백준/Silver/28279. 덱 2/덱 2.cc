@@ -1,71 +1,53 @@
 #include <bits/stdc++.h>
-#define ll long long
-#define fi first
-#define se second
-#define pb push_back
-#define pf push_front
-#define pob pop_back
-#define pof pop_front
-#define pii pair<int,int>
-#define mi map<int,int>
-#define qi queue<int>
-#define di deque<int>
-#define vi vector<int>
-#define vvi vector<vector<int>>
-#define tiii tuple<int,int,int>
-#define MOD 9901
-#define endl "\n"
-#define io ios_base::sync_with_stdio(false); cin.tie(nullptr);
 using namespace std;
 
 int main() {
-    io;
-    int t;
-    cin >> t;
-    di d;
-    while(t--){
-        int c;
-        cin >> c;
+    cin.tie(0)->sync_with_stdio(0);
 
-        if (c == 1) {
+    int t;
+    cin>>t;
+    deque<int>q;
+    while (t--) {
+        int n;
+        cin>>n;
+        if (n==2) {
             int x;
-            cin >> x;
-            d.pf(x);
-        } else if (c == 2) {
+            cin>>x;
+            q.push_back(x);
+        }else if (n==1) {
             int x;
-            cin >> x;
-            d.pb(x);
-        } else if (c == 3) {
-            if (d.empty()) {
-                cout << -1 << endl;
-            } else {
-                cout << d.front() << endl;
-                d.pof();
+            cin>>x;
+            q.push_front(x);
+        }else if (n==7) {
+            if (q.empty()) {
+                cout<<-1<<"\n";
+            }else {
+                cout<<q.front()<<"\n";
             }
-        } else if (c == 4) {
-            if (d.empty()) {
-                cout << -1 << endl;
-            } else {
-                cout << d.back() << endl;
-                d.pob();
+        }else if (n==5) {
+            cout<<q.size()<<"\n";
+        }else if (n==6) {
+            cout<<q.empty()<<"\n";
+        }else if (n==8) {
+            if (q.empty()) {
+                cout<<-1<<"\n";
+            }else {
+                cout<<q.back()<<"\n";
             }
-        } else if (c == 5) {
-            cout << d.size() << endl;
-        } else if (c == 6) {
-            cout << d.empty() << endl;
-        } else if (c == 7) {
-            if (d.empty()) {
-                cout << -1 << endl;
-            } else {
-                cout << d.front() << endl;
+        }else if (n==3) {
+            if (q.empty()) {
+                cout<<-1<<"\n";
+            }else {
+                cout<<q.front()<<"\n";
+                q.pop_front();
             }
-        } else if (c == 8) {
-            if (d.empty()) {
-                cout << -1 << endl;
-            } else {
-                cout << d.back() << endl;
+        }else if (n==4) {
+            if (q.empty()) {
+                cout<<-1<<"\n";
+            }else {
+                cout<<q.back()<<"\n";
+                q.pop_back();
             }
         }
     }
-    return 0;
 }
