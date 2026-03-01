@@ -1,38 +1,38 @@
-#include <iostream>
-#include <vector>
-#include <queue>
-#include <algorithm>
-
+#include <bits/stdc++.h>
+#define ll long long
 using namespace std;
 
 int main() {
-    int N, M;
-    cin >> N >> M;
+    cin.tie(0)->sync_with_stdio(0);
 
-    vector<int> devices(N);
-    for (int i = 0; i < N; ++i) {
-        cin >> devices[i];
+    int n,m;
+    cin>>n>>m;
+
+    ll arr[n];
+    for (int i=0; i<n; i++) {
+        cin>>arr[i];
     }
 
-    sort(devices.begin(), devices.end(), greater<int>());
+    sort(arr,arr+n,greater<ll>());
 
-    priority_queue<int> outlets;
-    for (int i = 0; i < M; ++i) {
-        outlets.push(0);
+    priority_queue<ll,vector<ll>,greater<ll>>pq;
+
+    while (m--) {
+        pq.push(0);
     }
 
-    for (int i = 0; i < N; ++i) {
-        int outlet_time = outlets.top();
-        outlets.pop();
-        outlets.push(outlet_time - devices[i]);
+    for (int i=0; i<n; i++) {
+        ll Min=pq.top();
+        pq.pop();
+
+        pq.push(Min+arr[i]);
     }
 
-    int min_time = 0;
-    while (!outlets.empty()) {
-        min_time = outlets.top();
-        outlets.pop();
-    }
-    cout << -min_time << endl;
+    ll Max=0;
 
-    return 0;
+    while (!pq.empty()) {
+        Max=max(Max,pq.top());
+        pq.pop();
+    }
+    cout<<Max;
 }
