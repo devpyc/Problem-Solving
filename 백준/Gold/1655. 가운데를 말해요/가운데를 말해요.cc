@@ -1,24 +1,38 @@
-#include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
-using namespace std;
-using namespace __gnu_pbds;
+#include <iostream>
+#include <queue>
+#include <functional>
 
-using ordered_set=tree<pair<int,int>,null_type,less<pair<int,int>>,rb_tree_tag,tree_order_statistics_node_update>;
+using namespace std;
 
 int main() {
-    cin.tie(0)->sync_with_stdio(0);
+    ios_base::sync_with_stdio(false);
+    cin.tie(nullptr);
 
-    int t;
-    cin>>t;
+    int N;
+    cin >> N;
 
-    ordered_set s;
+    priority_queue<int, vector<int>, less<int>> maxHeap;  // 최대 힙
+    priority_queue<int, vector<int>, greater<int>> minHeap;  // 최소 힙
 
-    for (int i=0; i<t; i++) {
-        int x;
-        cin>>x;
+    for (int i = 0; i < N; ++i) {
+        int num;
+        cin >> num;
 
-        s.insert({x,i});
-        cout<<(s.size()%2==0?s.find_by_order(s.size()/2-1)->first:s.find_by_order(s.size()/2)->first)<<"\n";
+        if (maxHeap.empty() || maxHeap.top() >= num)
+            maxHeap.push(num);
+        else
+            minHeap.push(num);
+
+        // 최대 힙과 최소 힙의 크기 조절
+        if (maxHeap.size() > minHeap.size() + 1) {
+            minHeap.push(maxHeap.top());
+            maxHeap.pop();
+        } else if (minHeap.size() > maxHeap.size()) {
+            maxHeap.push(minHeap.top());
+            minHeap.pop();
+        }
+        cout << maxHeap.top() << '\n';
     }
+
+    return 0;
 }
