@@ -1,7 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int main(){
+int main() {
     cin.tie(0)->sync_with_stdio(0);
 
     int t;
@@ -9,6 +9,6 @@ int main(){
     while (t--) {
         int a,b;
         cin>>a>>b;
-        cout<<gcd(a,b)<<"\n";
+        cout<<std::gcd(a,b)<<"\n";
     }
 }
