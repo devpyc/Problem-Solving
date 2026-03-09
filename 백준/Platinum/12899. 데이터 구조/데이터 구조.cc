@@ -4,25 +4,25 @@
 using namespace std;
 using namespace __gnu_pbds;
 
-typedef tree<pair<int,int>,null_type,less<pair<int,int>>,rb_tree_tag,tree_order_statistics_node_update>ordered_multiset;
+using ordered_set=tree<pair<int,int>,null_type,less<pair<int,int>>,rb_tree_tag,tree_order_statistics_node_update>;
 
 int main() {
     cin.tie(0)->sync_with_stdio(0);
 
-    int n;
-    cin>>n;
+    int t;
+    cin>>t;
 
-    ordered_multiset s;
+    ordered_set s;
 
-    int cnt=0;
-    while (n--) {
-        int a,b;
-        cin>>a>>b;
-        if (a==1) s.insert({b,cnt++});
-        else {
-            auto it=s.find_by_order(b-1);
-            cout<<it->first<<"\n";
-            s.erase(it);
+    while (t--) {
+        int n,x;
+        cin>>n>>x;
+
+        if (n==1) {
+            s.insert({x,t});
+        }else {
+            cout<<s.find_by_order(x-1)->first<<"\n";
+            s.erase(s.find_by_order(x-1));
         }
     }
 }
