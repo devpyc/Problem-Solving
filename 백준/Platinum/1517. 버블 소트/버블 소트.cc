@@ -1,70 +1,25 @@
 #include <bits/stdc++.h>
-#define ll long long
-#define fi first
-#define se second
-#define pb push_back
-#define pob pop_back
-#define pi pair<int,int>
-#define mi map<int,int>
-#define qi queue<int>
-#define vi vector<int>
-#define vvi vector<vector<int>>
-#define tiii tuple<int,int,int>
-#define endl "\n"
-#define io ios_base::sync_with_stdio(false); cin.tie(nullptr);
+#include <ext/pb_ds/assoc_container.hpp>
 using namespace std;
+using namespace __gnu_pbds;
 
-ll mrg_cnt(vi& a, int l, int m, int r) {
-    vi L(a.begin() + l, a.begin() + m + 1);
-    vi R(a.begin() + m + 1, a.begin() + r + 1);
-
-    int i = 0, j = 0, k = l;
-    ll cnt = 0;
-
-    while (i < L.size() && j < R.size()) {
-        if (L[i] <= R[j]) {
-            a[k++] = L[i++];
-        } else {
-            a[k++] = R[j++];
-            cnt += L.size() - i;
-        }
-    }
-
-    while (i < L.size()) {
-        a[k++] = L[i++];
-    }
-
-    while (j < R.size()) {
-        a[k++] = R[j++];
-    }
-
-    return cnt;
-}
-
-ll mrg_srt_cnt(vi& a, int l, int r) {
-    ll cnt = 0;
-    if (l < r) {
-        int m = l + (r - l) / 2;
-
-        cnt += mrg_srt_cnt(a, l, m);
-        cnt += mrg_srt_cnt(a, m + 1, r);
-
-        cnt += mrg_cnt(a, l, m, r);
-    }
-    return cnt;
-}
+typedef tree<pair<int,int>,null_type,less<pair<int,int>>,rb_tree_tag,tree_order_statistics_node_update>ordered_set;
 
 int main() {
-    io;
+    cin.tie(0)->sync_with_stdio(0);
+
     int n;
-    cin >> n;
-    vi a(n);
+    cin>>n;
 
-    for (int i = 0; i < n; i++) {
-        cin >> a[i];
+    ordered_set s;
+    long long cnt=0;
+
+    for (int i=0; i<n; i++) {
+        int x;
+        cin>>x;
+
+        cnt+=1LL*s.size()-s.order_of_key({x,INT_MAX});
+        s.insert({x,i});
     }
-
-    cout << mrg_srt_cnt(a, 0, n - 1) << endl;
-
-    return 0;
+    cout<<cnt;
 }
