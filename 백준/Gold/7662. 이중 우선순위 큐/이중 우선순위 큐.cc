@@ -1,48 +1,44 @@
 #include <bits/stdc++.h>
-#define endl "\n"
+#include <ext/pb_ds/assoc_container.hpp>
 using namespace std;
+using namespace __gnu_pbds;
+
+template <typename T>
+using ordered_set=tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
 
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
+    cin.tie(0)->sync_with_stdio(0);
 
-    int T;
-    cin >> T;
-
-    while (T--) {
-        int k;
-        cin >> k;
-
-        multiset<int> pq;
-
-        for (int i = 0; i < k; i++) {
-            char op;
-            int num;
-            cin >> op >> num;
-
-            if (op == 'I') {
-                pq.insert(num);
-            } else if (op == 'D') {
-                if (!pq.empty()) {
-                    if (num == 1) {
-                        auto it = pq.end();
-                        it--;
-                        pq.erase(it);
-                    } else if (num == -1) {
-                        pq.erase(pq.begin());
+    int t;
+    cin>>t;
+    while (t--) {
+        int n;
+        cin>>n;
+        ordered_set<pair<int,int>>s;
+        int i=0;
+        while (n--) {
+            char c;
+            cin>>c;
+            if (c=='I') {
+                int x;
+                cin>>x;
+                s.insert({x,i++});
+            }else {
+                int x;
+                cin>>x;
+                if (!s.empty()) {
+                    if (x==-1) {
+                        s.erase(s.find_by_order(0));
+                    }else {
+                        s.erase(s.find_by_order(s.size()-1));
                     }
                 }
             }
         }
-
-        if (pq.empty()) {
-            cout << "EMPTY" << endl;
-        } else {
-            auto max_it = pq.end();
-            max_it--;
-            cout << *max_it << " " << *pq.begin() << endl;
+        if (!s.empty()) {
+            cout<<s.find_by_order(s.size()-1)->first<<" "<<s.find_by_order(0)->first<<"\n";
+        }else {
+            cout<<"EMPTY\n";
         }
     }
-
-    return 0;
 }
