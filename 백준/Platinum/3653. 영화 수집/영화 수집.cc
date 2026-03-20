@@ -1,84 +1,41 @@
-#include <iostream>
-#include <vector>
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
 using namespace std;
+using namespace __gnu_pbds;
 
-class SegmentTree {
-private:
-    vector<int> tree;
-    int size;
-
-    void update(int node, int start, int end, int idx, int value) {
-        if (start == end) {
-            tree[node] += value;
-        } else {
-            int mid = (start + end) / 2;
-            if (start <= idx && idx <= mid) {
-                update(2 * node + 1, start, mid, idx, value);
-            } else {
-                update(2 * node + 2, mid + 1, end, idx, value);
-            }
-            tree[node] = tree[2 * node + 1] + tree[2 * node + 2];
-        }
-    }
-
-    int query(int node, int start, int end, int L, int R) {
-        if (R < start || end < L) {
-            return 0;
-        }
-        if (L <= start && end <= R) {
-            return tree[node];
-        }
-        int mid = (start + end) / 2;
-        return query(2 * node + 1, start, mid, L, R) + query(2 * node + 2, mid + 1, end, L, R);
-    }
-
-public:
-    SegmentTree(int n) {
-        size = n;
-        tree.resize(4 * n, 0);
-    }
-
-    void update(int idx, int value) {
-        update(0, 0, size - 1, idx, value);
-    }
-
-    int query(int L, int R) {
-        return query(0, 0, size - 1, L, R);
-    }
-};
+template <typename T>
+using ordered_set=tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
+    cin.tie(0)->sync_with_stdio(0);
 
     int t;
-    cin >> t;
+    cin>>t;
     while (t--) {
-        int n, m;
-        cin >> n >> m;
+        int n,m;
+        cin>>n>>m;
 
-        vector<int> position(n + 1);
-        SegmentTree segTree(n + m);
+        vector<int>arr(n+1);
+        ordered_set<int>s;
 
-        for (int i = 1; i <= n; ++i) {
-            position[i] = m + i - 1;
-            segTree.update(position[i], 1);
+        for (int i=1; i<=n; i++) {
+            arr[i]=m+i;
+            s.insert(arr[i]);
         }
 
-        int currentTop = m - 1;
-        for (int i = 0; i < m; ++i) {
-            int movie;
-            cin >> movie;
+        int top=m;
 
-            int moviesAbove = segTree.query(0, position[movie] - 1);
-            cout << moviesAbove << " ";
+        for (int i=0; i<m; i++) {
+            int x;
+            cin>>x;
 
-            segTree.update(position[movie], -1);
-            position[movie] = currentTop--;
-            segTree.update(position[movie], 1);
+            cout<<s.order_of_key(arr[x]);
+            if (i+1<m) cout<<" ";
+
+            s.erase(arr[x]);
+            arr[x]=top--;
+            s.insert(arr[x]);
         }
-        cout << '\n';
+        cout<<"\n";
     }
-
-    return 0;
 }
