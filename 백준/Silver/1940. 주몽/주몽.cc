@@ -7,23 +7,25 @@ int main() {
     int n,m;
     cin>>n>>m;
 
-    int arr[n];
-    for (int i=0; i<n; i++) {
-        cin>>arr[i];
+    vector<int>arr(n);
+    for (int &i:arr) {
+        cin>>i;
     }
-    sort(arr,arr+n);
+
+    sort(arr.begin(),arr.end());
 
     int l=0,r=n-1;
     int cnt=0;
     while (l<r) {
-        int sum=arr[l]+arr[r];
-        if (sum==m) {
+        int x=arr[l]+arr[r];
+        if (x==m) {
             cnt++;
-            l++;
-            r--;
         }
-        else if (sum>m) r--;
-        else l++;
+        if (x>=m) {
+            r--;
+        }else {
+            l++;
+        }
     }
     cout<<cnt;
 }
