@@ -1,14 +1,11 @@
 #include <bits/stdc++.h>
-#define endl "\n"
 using namespace std;
 
-int main() {
-    int K, N, M;
-    cin >> K >> N >> M;
+int main(){
+    cin.tie(0)->sync_with_stdio(0);
 
-    int money = max(0, K * N - M);
-
-    cout << money << endl;
-
-    return 0;
+    int a,b,c;
+    cin>>a>>b>>c;
+    int s=a*b-c;
+    cout<<(s<0?0:s);
 }
