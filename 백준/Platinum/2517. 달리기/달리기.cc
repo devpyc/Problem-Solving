@@ -4,23 +4,22 @@
 using namespace std;
 using namespace __gnu_pbds;
 
-template<typename T>
-using ordered_set = tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
+template <typename T>
+using ordered_set=tree<T,null_type,less<T>,rb_tree_tag,tree_order_statistics_node_update>;
 
 int main() {
     cin.tie(0)->sync_with_stdio(0);
 
-    int n;
-    cin>>n;
+    int t;
+    cin>>t;
 
-    ordered_set<pair<long long,int>>s;
+    ordered_set<int>s;
 
-    for (int i=0; i<n; i++) {
-        long long x;
+    while (t--) {
+        int x;
         cin>>x;
 
-        int cnt=s.order_of_key({x,INT_MAX});
-        cout<<i-cnt+1<<"\n";
-        s.insert({x,i});
+        s.insert(x);
+        cout<<s.size()-s.order_of_key(x)<<"\n";
     }
 }
