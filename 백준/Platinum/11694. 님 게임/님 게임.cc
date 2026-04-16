@@ -6,23 +6,23 @@ int main() {
 
     int n;
     cin>>n;
+    vector<int>arr(n);
 
-    bool check=false;
-    long long sum=0;
-    
-    for (int i=0; i<n; i++) {
-        int x;
-        cin>>x;
-        
-        if (x!=1) check=true;
-        sum^=x;
+    for (int &i:arr) {
+        cin>>i;
+    }
+
+    bool check=true;
+
+    int ans=0;
+    for (int i:arr) {
+        ans^=i;
+        if (i>1) check=false;
     }
 
     if (check) {
-        if (sum) cout<<"koosaga";
-        else cout<<"cubelover";
+        cout<<(arr.size()%2==1?"cubelover":"koosaga");
     }else {
-        if (!sum) cout<<"koosaga";
-        else cout<<"cubelover";
+        cout<<(ans==0?"cubelover":"koosaga");
     }
 }
